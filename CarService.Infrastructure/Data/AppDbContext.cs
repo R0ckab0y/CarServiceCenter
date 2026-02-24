@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Vehicle> vehicles => Set<Vehicle>();
     public DbSet<JobCard> jobCards => Set<JobCard>();
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);

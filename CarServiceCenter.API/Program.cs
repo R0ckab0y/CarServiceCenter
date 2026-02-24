@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using CarService.Infrastructure.Data;
+using CarServiceCenter.Application.Interfaces;
+using CarService.Infrastructure.Repositories.Implementations;
+using CarService.Infrastructure.Caching;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
+builder.Services.AddScoped<IJobCardRepository, JobCardRepository>();
+
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<ICacheService, MemoryCacheService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

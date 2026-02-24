@@ -6,25 +6,27 @@ namespace CarServiceCenter.Infrastructure.Configurations;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<User> builder)
-    {
-        builder.HasKey(x => x.Id);
+       public void Configure(EntityTypeBuilder<User> builder)
+       {
+              builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.FullName)
-               .IsRequired()
-               .HasMaxLength(150);
+              builder.Property(x => x.FullName)
+                     .IsRequired()
+                     .HasMaxLength(150);
 
-        builder.Property(x => x.Email)
-               .IsRequired()
-               .HasMaxLength(200);
+              builder.Property(x => x.Email)
+                     .IsRequired()
+                     .HasMaxLength(200);
 
-        builder.HasIndex(x => x.Email)
-               .IsUnique();
+              builder.HasIndex(x => x.Email)
+                     .IsUnique();
 
-        builder.Property(x => x.PhoneNumber)
-               .HasMaxLength(20);
+              builder.Property(x => x.PhoneNumber)
+                     .HasMaxLength(20);
+              builder.HasIndex(x => x.PhoneNumber).IsUnique();
 
-        builder.Property(x => x.Role)
-               .IsRequired();
-    }
+              builder.Property(x => x.Role)
+                     .IsRequired();
+              builder.HasIndex(u => u.Role);
+       }
 }
