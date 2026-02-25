@@ -25,7 +25,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _cacheService = cacheService;
     }
 
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
         var cacheKey = GetCacheKey($"Id_{id}");
 
