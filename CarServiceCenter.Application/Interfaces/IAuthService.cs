@@ -4,6 +4,6 @@ namespace CarServiceCenter.Application.Interfaces;
 
 public interface IAuthService
 {
-    Task<AuthResponseDto> LoginAsync(LoginRequestDto request);
+    Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
     Task<RegisterResponseDto> RegisterAsync(RegisterRequestDto request);
 }

@@ -16,7 +16,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<AuthResponseDto> Login([FromBody] LoginRequestDto requestDto)
+    public async Task<LoginResponseDto> Login([FromBody] LoginRequestDto requestDto)
     {
         // No try/catch needed
         // Exceptions are handled globally by ExceptionMiddleware
