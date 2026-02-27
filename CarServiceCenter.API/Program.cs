@@ -9,12 +9,25 @@ using CarService.Infrastructure.Data;
 using CarService.Infrastructure.Repositories.Implementations;
 using CarService.Infrastructure.Caching;
 using CarServiceCenter.API.Middlewares;
+using AspNetCoreRateLimit;
+using Serilog;
+
+
+Log.Logger = new LoggerConfiguration()
+             .WriteTo.Console()
+             .WriteTo.File("logs/log-.txt",
+             rollingInterval: RollingInterval.Day)
+             .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 // =======================
 // 1️⃣ Configure Services
 // =======================
+
+//Logger
+builder.Host.UseSerilog();
+
 
 // Database
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -25,10 +38,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IJobCardRepository, JobCardRepository>();
-
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 // Caching
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<ICacheService, MemoryCacheService>();
+
+//RateLimiter
+builder.Services.Configure<IpRateLimitOptions>(
+    builder.Configuration.GetSection("IpRateLimiting")
+);
+builder.Services.AddInMemoryRateLimiting();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
 // Application Services
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
@@ -83,6 +103,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSerilogRequestLogging();
+app.UseIpRateLimiting();
 app.UseAuthentication();
 app.UseAuthorization();
 

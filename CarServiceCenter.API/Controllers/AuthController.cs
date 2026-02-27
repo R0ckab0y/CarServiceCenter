@@ -15,18 +15,42 @@ public class AuthController : ControllerBase
         _service = service;
     }
 
+    // ========================
+    // LOGIN
+    // ========================
     [HttpPost("login")]
-    public async Task<LoginResponseDto> Login([FromBody] LoginRequestDto requestDto)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto requestDto)
     {
-        // No try/catch needed
-        // Exceptions are handled globally by ExceptionMiddleware
-        return await _service.LoginAsync(requestDto);
+        var result = await _service.LoginAsync(requestDto);
+
+        if (result == null)
+            return Unauthorized("Invalid email or password");
+
+        return Ok(result);
     }
 
+    // ========================
+    // REGISTER
+    // ========================
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto requestDto)
     {
         var result = await _service.RegisterAsync(requestDto);
+
+        return Ok(new
+        {
+            message = "User registered successfully!",
+            data = result
+        });
+    }
+
+    // ========================
+    // REFRESH TOKEN
+    // ========================
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto requestDto)
+    {
+        var result = await _service.RefreshTokenAsync(requestDto.Token);
         return Ok(result);
     }
 }

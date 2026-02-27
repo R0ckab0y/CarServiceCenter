@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<User> users => Set<User>();
     public DbSet<Vehicle> vehicles => Set<Vehicle>();
     public DbSet<JobCard> jobCards => Set<JobCard>();
+    public DbSet<RefreshToken> refreshTokens { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

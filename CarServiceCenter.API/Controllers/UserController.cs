@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using CarServiceCenter.Application.DTOs.Users;
 using CarServiceCenter.Application.Interfaces;
 using CarServiceCenter.Domain.Entities;
@@ -6,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceCenter.API.Controllers;
 
-[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
@@ -18,7 +18,8 @@ public class UserController : ControllerBase
         _user = user;
     }
 
-    [HttpGet]
+    [Authorize(Roles = "Admin")]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllUsers()
     {
         var users = await _user.GetAllAsync();
@@ -31,5 +32,14 @@ public class UserController : ControllerBase
             Role = u.Role.ToString()
         });
         return Ok(result);
+    }
+
+    [Authorize(Roles = "Customer")]
+    [HttpGet("profile")]
+    public async Task<IActionResult> GetProfile()
+    {
+        var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        var user = await _user.GetByIdAsync(userId);
+        return Ok(user);
     }
 }
